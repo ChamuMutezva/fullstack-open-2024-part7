@@ -1,0 +1,51 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "content": "custom-hooks are awesome!"
+    },
+    {
+      "id": 2,
+      "content": "best feature ever <3"
+    },
+    {
+      "content": "where are the notes",
+      "id": 3
+    },
+    {
+      "content": "does this work",
+      "id": 4
+    },
+    {
+      "content": "geraway",
+      "id": 5
+    }
+  ],
+  "persons": [
+    {
+      "id": 1,
+      "name": "mluukkai",
+      "number": "040-5483923"
+    },
+    {
+      "id": 2,
+      "name": "hellas",
+      "number": "012-123123"
+    },
+    {
+      "name": "C mutezva",
+      "number": "0832678210",
+      "id": 3
+    },
+    {
+      "name": "Prince ",
+      "number": "098890034",
+      "id": 4
+    },
+    {
+      "name": "Memory",
+      "number": "0740757026",
+      "id": 5
+    }
+  ]
+}
