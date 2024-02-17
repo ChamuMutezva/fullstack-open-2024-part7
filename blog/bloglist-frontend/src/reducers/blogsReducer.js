@@ -1,3 +1,11 @@
+import { useState, useEffect, useRef } from "react";
+/*
+useEffect(() => {
+    blogService.getAll().then((blogs) => setBlogs(blogs));
+
+    console.log(info);
+}, [blogs.length]);
+*/
 const initialState = [];
 
 const blogsReducer = (state = initialState, action) => {
