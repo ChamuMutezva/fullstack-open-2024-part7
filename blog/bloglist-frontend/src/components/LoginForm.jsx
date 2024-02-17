@@ -1,36 +1,38 @@
-import React from "react";
+import { useState } from 'react'
 
-const LoginForm = ({
-    handleSubmit,
-    handleUsernameChange,
-    handlePasswordChange,
-    username,
-    password,
-}) => (
-    <form onSubmit={handleSubmit} className="login-form">
-        <h2>Login to application</h2>
-        <div>
-            <label htmlFor="username">username</label>
-            <input
-                type="text"
-                id="username"
-                value={username}
-                name="Username"
-                onChange={handleUsernameChange}
-            />
-        </div>
-        <div>
-            <label htmlFor="password">password</label>
-            <input
-                type="password"
-                id="password"
-                value={password}
-                name="Password"
-                onChange={handlePasswordChange}
-            />
-        </div>
-        <button id="login-btn" type="submit">login</button>
+const LoginForm = ({ login }) => {
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    await login(username, password)
+  }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <div>
+        username
+        <input
+          id='username'
+          value={username}
+          onChange={({ target }) => setUsername(target.value)}
+        />
+      </div>
+      <div>
+        password
+        <input
+          id='password'
+          type="password"
+          value={password}
+          onChange={({ target }) => setPassword(target.value)}
+        />
+      </div>
+      <button id='login-button' type="submit">
+        login
+      </button>
     </form>
-);
+  )
+}
 
-export default LoginForm;
+export default LoginForm
