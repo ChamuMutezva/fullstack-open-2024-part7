@@ -1,28 +1,15 @@
-import { createStore } from "redux";
-
-const notificationReducer = (state, action) => {
-    switch (action.type) {
-        case "INFO_MESSAGE":
-            return action.payload;
-        case "ERROR_MESSAGE":
-            return action.payload;
-        default:
-            return state;
-    }
+const initialState = {
+    message: null,
+};
+const notificationReducer = (state = initialState, action) => {
+    if (action.type === "MESSAGE") {
+        return action.payload;
+    } else return state;
 };
 
-export const infoMessage = (message) => {
+export const notificationMessage = (message) => {
     return {
-        type: "INFO_MESSAGE",
-        payload: {
-            message,
-        },
-    };
-};
-
-export const errorMessage = (message) => {
-    return {
-        type: "ERROR_MESSAGE",
+        type: "MESSAGE",
         payload: {
             message,
         },

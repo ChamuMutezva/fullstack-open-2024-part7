@@ -7,12 +7,17 @@ import LoginForm from "./components/LoginForm";
 import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
+import { notificationMessage } from "./reducers/notificationReducer";
+import { useSelector, useDispatch } from "react-redux";
 
 const App = () => {
     const [blogs, setBlogs] = useState([]);
     const [user, setUser] = useState("");
-    const [info, setInfo] = useState({ message: null });
-
+    // const [info, setInfo] = useState({ message: null });
+    const dispatch = useDispatch();
+    
+    const info = useSelector((state) => state.notification);
+    console.log(info);
     const blogFormRef = useRef();
 
     useEffect(() => {
@@ -22,9 +27,18 @@ const App = () => {
 
     useEffect(() => {
         blogService.getAll().then((blogs) => setBlogs(blogs));
-    }, []);
+
+        console.log(info);
+    }, [blogs.length]);
 
     const notifyWith = (message, type = "info") => {
+        dispatch(notificationMessage(message));
+        console.log(info);
+        setTimeout(() => {
+            dispatch(notificationMessage(null));
+        }, 3000);
+        console.log(info);
+        /*
         setInfo({
             message,
             type,
@@ -32,7 +46,7 @@ const App = () => {
 
         setTimeout(() => {
             setInfo({ message: null });
-        }, 3000);
+        }, 3000);*/
     };
 
     const login = async (username, password) => {
