@@ -8,7 +8,12 @@ import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import { notificationMessage } from "./reducers/notificationReducer";
-import { appendBlog, setBlogs, createNewBlog } from "./reducers/blogsReducer";
+import {
+    appendBlog,
+    setBlogs,
+    createNewBlog,
+    updateLikes,
+} from "./reducers/blogsReducer";
 import { useSelector, useDispatch } from "react-redux";
 
 const App = () => {
@@ -80,15 +85,10 @@ const App = () => {
         blogFormRef.current.toggleVisibility();
     };
 
-    const like = async (blog) => {
-        const blogToUpdate = {
-            ...blog,
-            likes: blog.likes + 1,
-            user: blog.user.id,
-        };
-        const updatedBlog = await blogService.update(blogToUpdate);
+    const like = (blog) => {
+        console.log(blog.id);
+        dispatch(updateLikes(blog.id));
         notifyWith(`A like for the blog '${blog.title}' by '${blog.author}'`);
-        setBlogs(blogs.map((b) => (b.id === blog.id ? updatedBlog : b)));
     };
 
     const remove = async (blog) => {

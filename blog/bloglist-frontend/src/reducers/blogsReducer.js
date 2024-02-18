@@ -1,13 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import blogService from "../services/blogs";
 import { createSlice } from "@reduxjs/toolkit";
-/*
-useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-
-    console.log(info);
-}, [blogs.length]);
-*/
-const initialState = [];
 
 const blogSlice = createSlice({
     name: "blogs",
@@ -16,6 +9,17 @@ const blogSlice = createSlice({
         createNewBlog(state, action) {
             console.log(action.payload);
             state.push(action.payload);
+        },
+        updateLikes(state, action) {
+            console.log(action.payload);
+            const id = action.payload;
+            const blogToChange = state.find((blog) => blog.id === id);
+            const changedBlog = {
+                ...blogToChange,
+                likes: blogToChange.likes + 1,
+            };
+            blogService.update(changedBlog);
+            return state.map((blog) => (blog.id !== id ? blog : changedBlog));
         },
         appendBlog(state, action) {
             state.push(action.payload);
@@ -26,5 +30,6 @@ const blogSlice = createSlice({
     },
 });
 
-export const { setBlogs, appendBlog, createNewBlog } = blogSlice.actions;
+export const { setBlogs, appendBlog, updateLikes, createNewBlog } =
+    blogSlice.actions;
 export default blogSlice.reducer;
