@@ -13,6 +13,7 @@ import {
     setBlogs,
     createNewBlog,
     updateLikes,
+    deleteBlog,
 } from "./reducers/blogsReducer";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -91,14 +92,14 @@ const App = () => {
         notifyWith(`A like for the blog '${blog.title}' by '${blog.author}'`);
     };
 
-    const remove = async (blog) => {
+    const remove = (blog) => {
+        console.log(blog);
         const ok = window.confirm(
             `Sure you want to remove '${blog.title}' by ${blog.author}`
         );
         if (ok) {
-            await blogService.remove(blog.id);
+            dispatch(deleteBlog(blog));
             notifyWith(`The blog' ${blog.title}' by '${blog.author} removed`);
-            setBlogs(blogs.filter((b) => b.id !== blog.id));
         }
     };
 

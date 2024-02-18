@@ -21,6 +21,12 @@ const blogSlice = createSlice({
             blogService.update(changedBlog);
             return state.map((blog) => (blog.id !== id ? blog : changedBlog));
         },
+        deleteBlog(state, action) {
+            const id = action.payload.id;
+            console.log(id);
+            blogService.remove(id);
+            return state.filter((blog) => blog.id === id);
+        },
         appendBlog(state, action) {
             state.push(action.payload);
         },
@@ -30,6 +36,6 @@ const blogSlice = createSlice({
     },
 });
 
-export const { setBlogs, appendBlog, updateLikes, createNewBlog } =
+export const { setBlogs, appendBlog, updateLikes, createNewBlog, deleteBlog } =
     blogSlice.actions;
 export default blogSlice.reducer;
