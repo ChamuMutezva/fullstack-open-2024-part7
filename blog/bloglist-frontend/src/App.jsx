@@ -8,16 +8,18 @@ import NewBlog from "./components/NewBlog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
 import { notificationMessage } from "./reducers/notificationReducer";
+import { appendBlog, setBlogs, createNewBlog } from "./reducers/blogsReducer";
 import { useSelector, useDispatch } from "react-redux";
 
 const App = () => {
-    const [blogs, setBlogs] = useState([]);
+    //const [blogs, setBlogs] = useState([]);
     const [user, setUser] = useState("");
     // const [info, setInfo] = useState({ message: null });
     const dispatch = useDispatch();
-    
+
     const info = useSelector((state) => state.notification);
-    console.log(info);
+    const blogs = useSelector((state) => state.blogs);
+    console.log(blogs);
     const blogFormRef = useRef();
 
     useEffect(() => {
@@ -26,9 +28,11 @@ const App = () => {
     }, []);
 
     useEffect(() => {
-        blogService.getAll().then((blogs) => setBlogs(blogs));
+        // blogService.getAll().then((blogs) => setBlogs(blogs));
+        blogService.getAll().then((blogs) => dispatch(setBlogs(blogs)));
 
         console.log(info);
+        console.log(blogs.length);
     }, [blogs.length]);
 
     const notifyWith = (message, type = "info") => {
@@ -71,7 +75,8 @@ const App = () => {
         notifyWith(
             `A new blog '${newBlog.title}' by '${newBlog.author}' added`
         );
-        setBlogs(blogs.concat(createdBlog));
+        //  setBlogs(blogs.concat(createdBlog));
+        dispatch(createNewBlog(createdBlog));
         blogFormRef.current.toggleVisibility();
     };
 
@@ -121,7 +126,7 @@ const App = () => {
                 <NewBlog createBlog={createBlog} />
             </Togglable>
             <div>
-                {blogs.sort(byLikes).map((blog) => (
+                {blogs.map((blog) => (
                     <Blog
                         key={blog.id}
                         blog={blog}

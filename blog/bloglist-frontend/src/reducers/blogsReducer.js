@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { createSlice } from "@reduxjs/toolkit";
 /*
 useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -8,15 +9,22 @@ useEffect(() => {
 */
 const initialState = [];
 
-const blogsReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case "a":
-            return state;
-        case "b":
-            return "state";
-        default:
-            return state;
-    }
-};
+const blogSlice = createSlice({
+    name: "blogs",
+    initialState: [],
+    reducers: {
+        createNewBlog(state, action) {
+            console.log(action.payload);
+            state.push(action.payload);
+        },
+        appendBlog(state, action) {
+            state.push(action.payload);
+        },
+        setBlogs(state, action) {
+            return action.payload;
+        },
+    },
+});
 
-export default blogsReducer;
+export const { setBlogs, appendBlog, createNewBlog } = blogSlice.actions;
+export default blogSlice.reducer;
