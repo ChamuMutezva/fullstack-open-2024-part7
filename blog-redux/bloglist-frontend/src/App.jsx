@@ -33,10 +33,8 @@ const App = () => {
         setUser(user);
     }, []);
 
-    useEffect(() => {
-        // blogService.getAll().then((blogs) => setBlogs(blogs));
+    useEffect(() => {        
         blogService.getAll().then((blogs) => dispatch(setBlogs(blogs)));
-
         console.log(info);
         console.log(blogs.length);
     }, [blogs.length]);
@@ -48,15 +46,7 @@ const App = () => {
             dispatch(notificationMessage(null));
         }, 3000);
         console.log(info);
-        /*
-        setInfo({
-            message,
-            type,
-        });
-
-        setTimeout(() => {
-            setInfo({ message: null });
-        }, 3000);*/
+       
     };
 
     const login = async (username, password) => {
@@ -80,8 +70,7 @@ const App = () => {
         const createdBlog = await blogService.create(newBlog);
         notifyWith(
             `A new blog '${newBlog.title}' by '${newBlog.author}' added`
-        );
-        //  setBlogs(blogs.concat(createdBlog));
+        );       
         dispatch(createNewBlog(createdBlog));
         blogFormRef.current.toggleVisibility();
     };
