@@ -1,0 +1,9 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "HTML beginner",
+    "author": "Chamu Mutezva",
+    "url": "www.htmlbeginner.com",
+    "likes": 120
+}
