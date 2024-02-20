@@ -18,9 +18,7 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 
 const App = () => {
-    //const [blogs, setBlogs] = useState([]);
     const [user, setUser] = useState("");
-    // const [info, setInfo] = useState({ message: null });
     const dispatch = useDispatch();
 
     const info = useSelector((state) => state.notification);
@@ -33,7 +31,7 @@ const App = () => {
         setUser(user);
     }, []);
 
-    useEffect(() => {        
+    useEffect(() => {
         blogService.getAll().then((blogs) => dispatch(setBlogs(blogs)));
         console.log(info);
         console.log(blogs.length);
@@ -46,7 +44,6 @@ const App = () => {
             dispatch(notificationMessage(null));
         }, 3000);
         console.log(info);
-       
     };
 
     const login = async (username, password) => {
@@ -70,7 +67,7 @@ const App = () => {
         const createdBlog = await blogService.create(newBlog);
         notifyWith(
             `A new blog '${newBlog.title}' by '${newBlog.author}' added`
-        );       
+        );
         dispatch(createNewBlog(createdBlog));
         blogFormRef.current.toggleVisibility();
     };

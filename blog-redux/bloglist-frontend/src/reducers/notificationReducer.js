@@ -18,22 +18,3 @@ const notificationSlice = createSlice({
 
 export const { notificationMessage } = notificationSlice.actions;
 export default notificationSlice.reducer;
-
-/*
-const notificationReducer = (state = initialState, action) => {
-    if (action.type === "MESSAGE") {
-        return action.payload;
-    } else return state;
-};
-
-export const notificationMessage = (message) => {
-    return {
-        type: "MESSAGE",
-        payload: {
-            message,
-        },
-    };
-};
-
-export default notificationReducer;
-*/
