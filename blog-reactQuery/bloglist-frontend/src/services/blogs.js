@@ -20,9 +20,9 @@ const create = async (newObject) => {
     return response.data;
 };
 
-const update = async (id, newObject) => {
-    const request = axios.put(`${baseUrl}/${id}`, newObject);
-    const response = await request;
+const update = async (updatedBlog) => {
+    const response = await axios.put(`${baseUrl}/${updatedBlog.id}`, updatedBlog);
+    //const response = await request;
     return response.data;
 };
 
@@ -34,4 +34,4 @@ const deleteBlog = (id) => {
     return request.then((response) => response.data);
 };
 
-export default { getAll, setToken, create, update , deleteBlog};
+export default { getAll, setToken, create, update, deleteBlog };

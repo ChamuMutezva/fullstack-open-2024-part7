@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useReducer } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { jwtDecode } from "jwt-decode";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
@@ -8,18 +9,68 @@ import LoginForm from "./components/LoginForm";
 import CreateBlogForm from "./components/CreateBlogForm";
 import Togglable from "./components/Togglable";
 
+const notificationReducer = (state, action) => {
+    switch (action.type) {
+        case "INFO":
+            return {
+                ...state,
+                message: action.payload.message,
+                type: action.payload.type,
+            };
+        case "ERROR":
+            return {
+                ...state,
+                message: action.payload.message,
+                type: action.payload.type,
+            };
+        case "RESET":
+            return action.payload;
+        default:
+            return state;
+    }
+};
+
 const App = () => {
-    const [blogs, setBlogs] = useState([]);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [user, setUser] = useState(null);
     const [url, setUrl] = useState("");
     const [author, setAuthor] = useState("");
     const [title, setTitle] = useState("");
-    const [errorMessage, setErrorMessage] = useState(null);
-    const [infoMessage, setInfoMessage] = useState(null);
+
     const [targetBlog, setTargetBlog] = useState({});
     const blogFormRef = useRef();
+    const queryClient = useQueryClient();
+    const [notification, notificationDispatch] = useReducer(
+        notificationReducer,
+        { message: "", type: "reset" }
+    );
+
+    const result = useQuery({
+        queryKey: ["blogs"],
+        queryFn: blogService.getAll,
+    });
+
+    const newBlogMutation = useMutation({
+        mutationFn: blogService.create,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["blogs"] });
+        },
+    });
+
+    const updateBlogMutation = useMutation({
+        mutationFn: blogService.update,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["blogs"] });
+        },
+    });
+
+    const deleteBlogMutation = useMutation({
+        mutationFn: blogService.deleteBlog,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["blogs"] });
+        },
+    });
 
     const logout = () => {
         console.log("log out");
@@ -41,6 +92,8 @@ const App = () => {
                 console.log(user);
                 console.log(blog);
                 try {
+                    deleteBlogMutation.mutate(id);
+                    /*
                     blogService.deleteBlog(id).then((returnedBlog) => {
                         setBlogs(
                             blogs.filter(
@@ -48,45 +101,79 @@ const App = () => {
                             )
                         );
                     });
+                    */
                 } catch (error) {
-                    setErrorMessage(error.message);
+                    notificationDispatch({
+                        type: "ERROR",
+                        payload: {
+                            message: error.message,
+                            type: "error",
+                        },
+                    });
                     setTimeout(() => {
-                        setErrorMessage(null);
+                        console.log(notification.message);
+                        notificationDispatch({
+                            type: "RESET",
+                            payload: {
+                                message: "",
+                                type: "reset",
+                            },
+                        });
                     }, 5000);
                 }
             } else {
                 console.log("Deleting blog cancelled");
             }
         } else {
-            setErrorMessage(
-                `${blog.user.username} did not create this blog. A blog can only be deleted by the creator`
-            );
+            notificationDispatch({
+                type: "ERROR",
+                payload: {
+                    message: `${blog.user.username} did not create this blog. A blog can only be deleted by the creator`,
+                    type: "error",
+                },
+            });
             setTimeout(() => {
-                setErrorMessage(null);
+                console.log(notification.message);
+                notificationDispatch({
+                    type: "RESET",
+                    payload: {
+                        message: "",
+                        type: "reset",
+                    },
+                });
             }, 5000);
         }
     };
 
-    const updateLikes = (id) => {
-        const blog = blogs.find((blog) => blog.id === id);
-        const changedBlog = { ...blog, likes: blog.likes + 1 };
-        setTargetBlog(changedBlog);
-        console.log(changedBlog);
-        blogService
-            .update(id, changedBlog)
-            .then((returnedBlog) => {
-                setBlogs(prevState =>
-                    prevState.map((blog) =>
-                        Number(blog.id) !== Number(id) ? blog : returnedBlog
-                    )
-                );
-            })
-            .catch((error) => {
-                setErrorMessage(error.message);
-                setTimeout(() => {
-                    setErrorMessage(null);
-                }, 5000);
+    const updateLikes = (blog) => {
+        //const blog = blogs.find((blog) => blog.id === id);
+        //const changedBlog = { ...blog, likes: blog.likes + 1 };
+        // setTargetBlog(changedBlog);
+        console.log(blog);
+        // console.log(changedBlog);
+        try {
+            updateBlogMutation.mutate({ ...blog, likes: blog.likes + 1 });
+        } catch (error) {
+            notificationDispatch({
+                type: "ERROR",
+                payload: {
+                    message: error.message,
+                    type: "error",
+                },
             });
+            setTimeout(() => {
+                console.log(notification.message);
+                notificationDispatch({
+                    type: "RESET",
+                    payload: {
+                        message: "",
+                        type: "reset",
+                    },
+                });
+            }, 5000);
+        }
+
+        console.log(blogs);
     };
 
     const handleCreateBlog = (event) => {
@@ -99,23 +186,49 @@ const App = () => {
                 url: url,
             };
 
+            newBlogMutation.mutate(blogObject);
+            /*
             blogService.create(blogObject).then((returnedBlog) => {
                 setBlogs(blogs.concat(returnedBlog));
                 setAuthor("");
                 setTitle("");
                 setUrl("");
             });
-
-            setInfoMessage(
-                `A new blog ${blogObject.title} by ${blogObject.author}`
-            );
+            */
+            notificationDispatch({
+                type: "INFO",
+                payload: {
+                    message: `A new blog ${blogObject.title} by ${blogObject.author}`,
+                    type: "info",
+                },
+            });
             setTimeout(() => {
-                setInfoMessage(null);
+                console.log(notification.message);
+                notificationDispatch({
+                    type: "RESET",
+                    payload: {
+                        message: "",
+                        type: "reset",
+                    },
+                });
             }, 5000);
         } catch (error) {
-            setErrorMessage(error);
+            notificationDispatch({
+                type: "ERROR",
+                payload: {
+                    message: error,
+                    type: "error",
+                },
+            });
             setTimeout(() => {
-                setInfoMessage(null);
+                console.log(notification.message);
+                notificationDispatch({
+                    type: "RESET",
+                    payload: {
+                        message: "",
+                        type: "reset",
+                    },
+                });
             }, 5000);
         }
     };
@@ -140,10 +253,47 @@ const App = () => {
             setUsername("");
             setPassword("");
             console.log(user.token);
-        } catch (exception) {
-            setErrorMessage("Wrong username or password");
+            {
+                /*
+            notificationDispatch({
+                type: "INFO",
+                payload: {
+                    message: `You are loggin as ${username}`,
+                    type: "info",
+                },
+            });
             setTimeout(() => {
-                setErrorMessage(null);
+                console.log(notification.message);               
+                notificationDispatch({
+                    type: "RESET",
+                    payload: {
+                        message: "",
+                        type: "reset",
+                    },
+                });
+            }, 5000);
+        */
+            }
+        } catch (exception) {
+            // setErrorMessage("Wrong username or password");
+            notificationDispatch({
+                type: "ERROR",
+                payload: {
+                    message: "Wrong username or password",
+                    type: "error",
+                },
+            });
+            console.log(notification.message);
+            setTimeout(() => {
+                console.log(notification.message);
+                // setErrorMessage(null);
+                notificationDispatch({
+                    type: "RESET",
+                    payload: {
+                        message: "",
+                        type: "reset",
+                    },
+                });
             }, 5000);
         }
     };
@@ -173,7 +323,7 @@ const App = () => {
             handleSubmit={handleLogin}
         />
     );
-
+    /*
     useEffect(() => {
         blogService.getAll().then((blogs) => {
             blogs.sort((a, b) => b.likes - a.likes);
@@ -182,6 +332,7 @@ const App = () => {
         console.log(blogs.length);
     }, [blogs.length]);
 
+    
     useEffect(() => {
         if (targetBlog !== null) {
             setBlogs((prevState) =>
@@ -192,34 +343,39 @@ const App = () => {
             setTargetBlog(null);
         }
     }, [targetBlog, targetBlog?.likes]);
-
+*/
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
         if (loggedUserJSON === null) return;
         const decodedToken = jwtDecode(loggedUserJSON);
         const expirationTime = decodedToken.exp * 1000;
-        console.log(decodedToken);
-        console.log(expirationTime);
-        console.log(Date.now());
+
         if (loggedUserJSON) {
             const user = JSON.parse(loggedUserJSON);
             setUser(user);
             blogService.setToken(user.token);
         }
 
-        console.log(expirationTime > Date.now());
         if (expirationTime < Date.now()) {
             setUser(null);
             window.localStorage.removeItem("loggedBlogAppUser");
         }
     }, []);
 
+    if (result.isLoading) {
+        return <div>loading data...</div>;
+    }
+
+    const blogs = result.data;
+
     return (
         <div>
-            <Notification
-                message={errorMessage || infoMessage}
-                className={errorMessage ? "error" : "info"}
-            />
+            {notification.type !== "reset" && (
+                <Notification
+                    message={notification.message}
+                    className={notification.type === "error" ? "error" : "info"}
+                />
+            )}
             {!user && loginForm()}
             {user && (
                 <div className="blogs">
@@ -235,7 +391,7 @@ const App = () => {
                                 key={blog.id}
                                 blog={blog}
                                 user={user.username}
-                                update={() => updateLikes(blog.id)}
+                                update={() => updateLikes(blog)}
                                 deleteBlog={() => deleteBlog(blog.id)}
                             />
                         ))}
