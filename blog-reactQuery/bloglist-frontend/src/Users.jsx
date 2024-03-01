@@ -7,6 +7,7 @@ import LoginContext from "./context/LoginContext";
 
 function Users() {
     const blogsPerAuthor = {};
+    const blogUsers = {};
     const result = useQuery({
         queryKey: ["blogs"],
         queryFn: blogService.getAll,
@@ -18,6 +19,7 @@ function Users() {
 
     if (blogs) {
         console.log(blogs);
+
         blogs.forEach((blog) => {
             const author = blog.author;
             if (!blogsPerAuthor[author]) {
@@ -26,7 +28,19 @@ function Users() {
                 blogsPerAuthor[author]++;
             }
         });
-        console.log(blogsPerAuthor);
+      //  console.log(blogsPerAuthor);
+
+        blogs.forEach((blog) => {
+            const user = blog.user.username;
+            console.log(user);
+            if (!blogUsers[user]) {
+                blogUsers[user] = 1
+            } else {
+                blogUsers[user]++
+            }
+        });
+
+        console.log(blogUsers)
     }
     return (
         <div>
@@ -47,10 +61,12 @@ function Users() {
                         </tr>
                     </thead>
                     <tbody>
-                        {Object.keys(blogsPerAuthor).map((author) => (
-                            <tr key={author}>
-                                <th>{author}</th>
-                                <th>{blogsPerAuthor[author]}</th>
+                        {Object.keys(blogUsers).map((user) => (
+                            <tr key={user}>
+                                <th>
+                                    <Link to="">{user}</Link>
+                                </th>
+                                <th>{blogUsers[user]}</th>
                             </tr>
                         ))}
                     </tbody>
