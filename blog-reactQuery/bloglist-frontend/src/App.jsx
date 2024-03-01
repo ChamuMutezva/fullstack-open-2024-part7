@@ -1,6 +1,8 @@
-import { useState, useEffect, useRef, useReducer } from "react";
+import { useState, useEffect, useRef, useReducer, useContext } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import LoginContext from "./context/LoginContext";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
@@ -10,6 +12,7 @@ import CreateBlogForm from "./components/CreateBlogForm";
 import Togglable from "./components/Togglable";
 
 const notificationReducer = (state, action) => {
+    console.log(action);
     switch (action.type) {
         case "INFO":
             return {
@@ -17,12 +20,7 @@ const notificationReducer = (state, action) => {
                 message: action.payload.message,
                 type: action.payload.type,
             };
-        case "ERROR":
-            return {
-                ...state,
-                message: action.payload.message,
-                type: action.payload.type,
-            };
+
         case "RESET":
             return action.payload;
         default:
@@ -33,14 +31,13 @@ const notificationReducer = (state, action) => {
 const App = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [user, setUser] = useState(null);
+    // const [user, setUser] = useState(null);
     const [url, setUrl] = useState("");
     const [author, setAuthor] = useState("");
     const [title, setTitle] = useState("");
-
-    const [targetBlog, setTargetBlog] = useState({});
     const blogFormRef = useRef();
     const queryClient = useQueryClient();
+    const [user, loginDispatch] = useContext(LoginContext);
     const [notification, notificationDispatch] = useReducer(
         notificationReducer,
         { message: "", type: "reset" }
@@ -74,7 +71,11 @@ const App = () => {
 
     const logout = () => {
         console.log("log out");
-        setUser(null);
+        loginDispatch({
+            type: "LOGOUT",
+        });
+        // setUser(null);
+        // console.log(login);
         return window.localStorage.removeItem("loggedBlogAppUser");
     };
 
@@ -93,18 +94,9 @@ const App = () => {
                 console.log(blog);
                 try {
                     deleteBlogMutation.mutate(id);
-                    /*
-                    blogService.deleteBlog(id).then((returnedBlog) => {
-                        setBlogs(
-                            blogs.filter(
-                                (blog) => Number(blog.id) !== Number(id)
-                            )
-                        );
-                    });
-                    */
                 } catch (error) {
                     notificationDispatch({
-                        type: "ERROR",
+                        type: "INFO",
                         payload: {
                             message: error.message,
                             type: "error",
@@ -126,7 +118,7 @@ const App = () => {
             }
         } else {
             notificationDispatch({
-                type: "ERROR",
+                type: "INFO",
                 payload: {
                     message: `${blog.user.username} did not create this blog. A blog can only be deleted by the creator`,
                     type: "error",
@@ -146,16 +138,12 @@ const App = () => {
     };
 
     const updateLikes = (blog) => {
-        //const blog = blogs.find((blog) => blog.id === id);
-        //const changedBlog = { ...blog, likes: blog.likes + 1 };
-        // setTargetBlog(changedBlog);
         console.log(blog);
-        // console.log(changedBlog);
         try {
             updateBlogMutation.mutate({ ...blog, likes: blog.likes + 1 });
         } catch (error) {
             notificationDispatch({
-                type: "ERROR",
+                type: "INFO",
                 payload: {
                     message: error.message,
                     type: "error",
@@ -187,14 +175,7 @@ const App = () => {
             };
 
             newBlogMutation.mutate(blogObject);
-            /*
-            blogService.create(blogObject).then((returnedBlog) => {
-                setBlogs(blogs.concat(returnedBlog));
-                setAuthor("");
-                setTitle("");
-                setUrl("");
-            });
-            */
+
             notificationDispatch({
                 type: "INFO",
                 payload: {
@@ -214,7 +195,7 @@ const App = () => {
             }, 5000);
         } catch (error) {
             notificationDispatch({
-                type: "ERROR",
+                type: "INFO",
                 payload: {
                     message: error,
                     type: "error",
@@ -249,35 +230,19 @@ const App = () => {
             );
 
             blogService.setToken(user.token);
-            setUser(user);
+            loginDispatch({
+                type: "LOGIN",
+                payload: user,
+            });
+            // setUser(user);
+            console.log(user);
+           // console.log(login);
             setUsername("");
             setPassword("");
-            console.log(user.token);
-            {
-                /*
+        } catch (exception) {
+            console.log(exception)
             notificationDispatch({
                 type: "INFO",
-                payload: {
-                    message: `You are loggin as ${username}`,
-                    type: "info",
-                },
-            });
-            setTimeout(() => {
-                console.log(notification.message);               
-                notificationDispatch({
-                    type: "RESET",
-                    payload: {
-                        message: "",
-                        type: "reset",
-                    },
-                });
-            }, 5000);
-        */
-            }
-        } catch (exception) {
-            // setErrorMessage("Wrong username or password");
-            notificationDispatch({
-                type: "ERROR",
                 payload: {
                     message: "Wrong username or password",
                     type: "error",
@@ -286,7 +251,7 @@ const App = () => {
             console.log(notification.message);
             setTimeout(() => {
                 console.log(notification.message);
-                // setErrorMessage(null);
+
                 notificationDispatch({
                     type: "RESET",
                     payload: {
@@ -323,27 +288,7 @@ const App = () => {
             handleSubmit={handleLogin}
         />
     );
-    /*
-    useEffect(() => {
-        blogService.getAll().then((blogs) => {
-            blogs.sort((a, b) => b.likes - a.likes);
-            return setBlogs(blogs);
-        });
-        console.log(blogs.length);
-    }, [blogs.length]);
 
-    
-    useEffect(() => {
-        if (targetBlog !== null) {
-            setBlogs((prevState) =>
-                prevState.map((blog) =>
-                    blog.id === targetBlog.id ? targetBlog : blog
-                )
-            );
-            setTargetBlog(null);
-        }
-    }, [targetBlog, targetBlog?.likes]);
-*/
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
         if (loggedUserJSON === null) return;
@@ -352,12 +297,19 @@ const App = () => {
 
         if (loggedUserJSON) {
             const user = JSON.parse(loggedUserJSON);
-            setUser(user);
+            loginDispatch({
+                type: "LOGIN",
+                payload: user,
+            });
+            // setUser(user);
             blogService.setToken(user.token);
         }
 
         if (expirationTime < Date.now()) {
-            setUser(null);
+            loginDispatch({
+                type: "LOGOUT",
+            });
+            // setUser(null);
             window.localStorage.removeItem("loggedBlogAppUser");
         }
     }, []);
@@ -382,6 +334,7 @@ const App = () => {
                     <h2>blogs</h2>
                     <p>{user.username} logged in</p>
                     <button onClick={logout}>Log out</button>
+                    <Link to={"/users"}>Users</Link>
 
                     {createBlog()}
 
