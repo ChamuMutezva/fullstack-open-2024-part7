@@ -1,0 +1,86 @@
+[
+    {
+        "title": "Jack of all trades",
+        "author": "K richards",
+        "url": "www.davidpsalms.com",
+        "likes": 27,
+        "user": {
+            "username": "mutezva",
+            "name": "mutezva",
+            "id": "6594f2402658f4fc37966319"
+        },
+        "id": "659f621efd70521bc34089e0"
+    },
+    {
+        "title": "React roadmap and react query and fullstack",
+        "author": "Jerry Kissinger",
+        "url": "www.kissenger.com",
+        "likes": 83,
+        "user": {
+            "username": "Chamu",
+            "name": "Chamu",
+            "id": "6594c8bc3a1461213cc577a9"
+        },
+        "id": "65ad1c595a1702aac91e3474"
+    },
+    {
+        "title": "hey there",
+        "author": "Jerry Kissinger",
+        "url": "www.davidpsalms.com",
+        "likes": 0,
+        "user": {
+            "username": "Chamu",
+            "name": "Chamu",
+            "id": "6594c8bc3a1461213cc577a9"
+        },
+        "id": "65d9594b1b049f7af628f839"
+    },
+    {
+        "title": "The new beginning",
+        "author": "Jerry Kissinger",
+        "url": "www.davidpsalms.com",
+        "likes": 2,
+        "user": {
+            "username": "Chamu",
+            "name": "Chamu",
+            "id": "6594c8bc3a1461213cc577a9"
+        },
+        "id": "65d965531b049f7af628f8cb"
+    },
+    {
+        "title": "Never done before",
+        "author": "K richards",
+        "url": "www.richards.com",
+        "likes": 0,
+        "user": {
+            "username": "Chamu",
+            "name": "Chamu",
+            "id": "6594c8bc3a1461213cc577a9"
+        },
+        "id": "65de9baea515fa6ab6c416f9"
+    },
+    {
+        "title": "Accessibility guidelines",
+        "author": "Ken Rodgers",
+        "url": "www.ufic.com",
+        "likes": 0,
+        "user": {
+            "username": "Chamu",
+            "name": "Chamu",
+            "id": "6594c8bc3a1461213cc577a9"
+        },
+        "id": "65e1458b1d74265e17a517fe"
+    },
+    {
+        "title": "UseReducer hook ",
+        "author": "Jerry Kissinger",
+        "url": "www.kissenger.com",
+        "likes": 0,
+        "user": {
+            "username": "mutezva",
+            "name": "mutezva",
+            "id": "6594f2402658f4fc37966319"
+        },
+        "id": "65e2eb4b1d74265e17a51a23"
+    }
+]

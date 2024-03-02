@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -6,8 +6,9 @@ import blogService from "./services/blogs";
 import LoginContext from "./context/LoginContext";
 
 function Users() {
-    const blogsPerAuthor = {};
-    const blogUsers = {};
+    const [resultUsers, setResultUsers] = useState([]);
+    const blogCountByUser = {};
+
     const result = useQuery({
         queryKey: ["blogs"],
         queryFn: blogService.getAll,
@@ -19,29 +20,30 @@ function Users() {
 
     if (blogs) {
         console.log(blogs);
-
+        // Iterate through the blogs
         blogs.forEach((blog) => {
-            const author = blog.author;
-            if (!blogsPerAuthor[author]) {
-                blogsPerAuthor[author] = 1;
+            const userId = blog.user.id;
+            if (!blogCountByUser[userId]) {
+                blogCountByUser[userId] = {
+                    username: blog.user.username,
+                    name: blog.user.name,
+                    id: userId,
+                    count: 1,
+                };
             } else {
-                blogsPerAuthor[author]++;
+                blogCountByUser[userId].count++;
             }
         });
-      //  console.log(blogsPerAuthor);
-
-        blogs.forEach((blog) => {
-            const user = blog.user.username;
-            console.log(user);
-            if (!blogUsers[user]) {
-                blogUsers[user] = 1
-            } else {
-                blogUsers[user]++
-            }
-        });
-
-        console.log(blogUsers)
     }
+
+    console.log(blogCountByUser);
+    const res = Object.values(blogCountByUser);
+    res.map((user) => console.log(user.count));
+    console.log(res);
+    // Convert the object values to an array
+    // setResultUsers(Object.values(blogCountByUser));
+    Object.keys(blogCountByUser).map((user) => console.log(user.id));
+
     return (
         <div>
             <div>
@@ -61,12 +63,14 @@ function Users() {
                         </tr>
                     </thead>
                     <tbody>
-                        {Object.keys(blogUsers).map((user) => (
-                            <tr key={user}>
+                        {res.map((user) => (
+                            <tr key={user.id}>
                                 <th>
-                                    <Link to="">{user}</Link>
+                                    <Link to={`/users/${user.id}`}>
+                                        {user.username}
+                                    </Link>
                                 </th>
-                                <th>{blogUsers[user]}</th>
+                                <th>{user.count}</th>
                             </tr>
                         ))}
                     </tbody>
