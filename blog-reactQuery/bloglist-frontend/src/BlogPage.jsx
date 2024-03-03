@@ -47,7 +47,6 @@ function BlogPage() {
     });
 
     const deleteBlog = (id) => {
-       
         console.log(login?.username);
 
         if (login?.username) {
@@ -91,16 +90,22 @@ function BlogPage() {
         <div>
             <h2>Blog</h2>
             {login?.username} logged in
+            <button onClick={() => navigate(-1)}> Back</button>
             <Notification info={info} />
             <h3>{blog?.title}</h3>
             <a href={`${blog?.url}`}>{blog?.url}</a>
             <p>{blog?.likes} likes</p>
-            <button id="like-btn" onClick={() => updateLikes(blog)}>
+            <button
+                id="like-btn"
+                onClick={() => updateLikes(blog)}
+                disabled={info.message !== null}
+            >
                 Like
             </button>
             <button id="delete-btn" onClick={() => deleteBlog(blog.id)}>
                 Delete
             </button>
+            <p>Added by {blog?.author}</p>
         </div>
     );
 }

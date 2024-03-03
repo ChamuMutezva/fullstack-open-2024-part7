@@ -10,38 +10,30 @@ import Notification from "./components/Notification";
 import LoginForm from "./components/LoginForm";
 import CreateBlogForm from "./components/CreateBlogForm";
 import Togglable from "./components/Togglable";
-
-const notificationReducer = (state, action) => {
-    console.log(action);
-    switch (action.type) {
-        case "INFO":
-            return {
-                ...state,
-                message: action.payload.message,
-                type: action.payload.type,
-            };
-
-        case "RESET":
-            return action.payload;
-        default:
-            return state;
-    }
-};
+import { notificationMessage } from "./reducers/notificationReducer";
+import { useSelector, useDispatch } from "react-redux";
 
 const App = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    // const [user, setUser] = useState(null);
     const [url, setUrl] = useState("");
     const [author, setAuthor] = useState("");
     const [title, setTitle] = useState("");
     const blogFormRef = useRef();
     const queryClient = useQueryClient();
     const [user, loginDispatch] = useContext(LoginContext);
-    const [notification, notificationDispatch] = useReducer(
-        notificationReducer,
-        { message: "", type: "reset" }
-    );
+    const dispatch = useDispatch();
+    const info = useSelector((state) => state.notification);
+    console.log(info);
+
+    const notifyWith = (message, type = "info") => {
+        dispatch(notificationMessage(message));
+        console.log(info);
+        setTimeout(() => {
+            dispatch(notificationMessage(null));
+        }, 3000);
+        console.log(info);
+    };
 
     const result = useQuery({
         queryKey: ["blogs"],
@@ -55,27 +47,12 @@ const App = () => {
         },
     });
 
-    const updateBlogMutation = useMutation({
-        mutationFn: blogService.update,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["blogs"] });
-        },
-    });
-
-    const deleteBlogMutation = useMutation({
-        mutationFn: blogService.deleteBlog,
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["blogs"] });
-        },
-    });
-
     const logout = () => {
         console.log("log out");
         loginDispatch({
             type: "LOGOUT",
         });
-        // setUser(null);
-        // console.log(login);
+
         return window.localStorage.removeItem("loggedBlogAppUser");
     };
 
@@ -90,42 +67,14 @@ const App = () => {
             };
 
             newBlogMutation.mutate(blogObject);
-
-            notificationDispatch({
-                type: "INFO",
-                payload: {
-                    message: `A new blog ${blogObject.title} by ${blogObject.author}`,
-                    type: "info",
-                },
-            });
-            setTimeout(() => {
-                console.log(notification.message);
-                notificationDispatch({
-                    type: "RESET",
-                    payload: {
-                        message: "",
-                        type: "reset",
-                    },
-                });
-            }, 5000);
+            notifyWith(
+                `A new blog ${blogObject.title} created by ${blogObject.author}`
+            );
+            setAuthor("");
+            setTitle("");
+            setUrl("");
         } catch (error) {
-            notificationDispatch({
-                type: "INFO",
-                payload: {
-                    message: error,
-                    type: "error",
-                },
-            });
-            setTimeout(() => {
-                console.log(notification.message);
-                notificationDispatch({
-                    type: "RESET",
-                    payload: {
-                        message: "",
-                        type: "reset",
-                    },
-                });
-            }, 5000);
+            notifyWith(error, "error");
         }
     };
 
@@ -237,12 +186,7 @@ const App = () => {
 
     return (
         <div>
-            {notification.type !== "reset" && (
-                <Notification
-                    message={notification.message}
-                    className={notification.type === "error" ? "error" : "info"}
-                />
-            )}
+            <Notification info={info} />
             {!user && loginForm()}
             {user && (
                 <div className="blogs">
