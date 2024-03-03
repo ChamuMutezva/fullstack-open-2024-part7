@@ -43,6 +43,25 @@ blogRouter.get("/api/blogs", async (request, response) => {
     response.json(blogs);
 });
 
+blogRouter.get("/api/blogs/:id", async (request, response) => {
+    try {
+        const blogId = request.params.id;
+        const blog = await Blog.findById(blogId).populate("user", {
+            username: 1,
+            name: 1,
+            id: 1,
+        });
+
+        if (!blog) {
+            return response.status(404).json({ error: "Blog not found" });
+        }
+
+        response.json(blog);
+    } catch (error) {
+        response.status(500).json({ error: "Server error" });
+    }
+});
+
 blogRouter.put("/api/blogs/:id", (request, response, next) => {
     const body = request.body;
 
@@ -68,7 +87,7 @@ blogRouter.delete(
 
         if (blog.user.toString() !== request.user.id.toString()) {
             console.log(`blog.user: ${blog.user.toString()}`);
-            console.log("---------------------")
+            console.log("---------------------");
             console.log(`request.user.id: ${request.user.id.toString()}`);
             return response.status(401).json({ error: "Unauthorized access" });
         }

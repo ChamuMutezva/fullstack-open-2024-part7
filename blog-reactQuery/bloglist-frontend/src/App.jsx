@@ -79,91 +79,6 @@ const App = () => {
         return window.localStorage.removeItem("loggedBlogAppUser");
     };
 
-    const deleteBlog = (id) => {
-        const blog = blogs.find((blog) => blog.id === id);
-
-        console.log(user.username);
-        console.log(blog.user.username);
-        if (user.username === blog.user.username) {
-            if (
-                confirm(
-                    `Remove blog You're NOT gonna need it! by ${blog.author}`
-                )
-            ) {
-                console.log(user);
-                console.log(blog);
-                try {
-                    deleteBlogMutation.mutate(id);
-                } catch (error) {
-                    notificationDispatch({
-                        type: "INFO",
-                        payload: {
-                            message: error.message,
-                            type: "error",
-                        },
-                    });
-                    setTimeout(() => {
-                        console.log(notification.message);
-                        notificationDispatch({
-                            type: "RESET",
-                            payload: {
-                                message: "",
-                                type: "reset",
-                            },
-                        });
-                    }, 5000);
-                }
-            } else {
-                console.log("Deleting blog cancelled");
-            }
-        } else {
-            notificationDispatch({
-                type: "INFO",
-                payload: {
-                    message: `${blog.user.username} did not create this blog. A blog can only be deleted by the creator`,
-                    type: "error",
-                },
-            });
-            setTimeout(() => {
-                console.log(notification.message);
-                notificationDispatch({
-                    type: "RESET",
-                    payload: {
-                        message: "",
-                        type: "reset",
-                    },
-                });
-            }, 5000);
-        }
-    };
-
-    const updateLikes = (blog) => {
-        console.log(blog);
-        try {
-            updateBlogMutation.mutate({ ...blog, likes: blog.likes + 1 });
-        } catch (error) {
-            notificationDispatch({
-                type: "INFO",
-                payload: {
-                    message: error.message,
-                    type: "error",
-                },
-            });
-            setTimeout(() => {
-                console.log(notification.message);
-                notificationDispatch({
-                    type: "RESET",
-                    payload: {
-                        message: "",
-                        type: "reset",
-                    },
-                });
-            }, 5000);
-        }
-
-        console.log(blogs);
-    };
-
     const handleCreateBlog = (event) => {
         event.preventDefault();
         blogFormRef.current.toggleVisibility();
@@ -236,11 +151,11 @@ const App = () => {
             });
             // setUser(user);
             console.log(user);
-           // console.log(login);
+            // console.log(login);
             setUsername("");
             setPassword("");
         } catch (exception) {
-            console.log(exception)
+            console.log(exception);
             notificationDispatch({
                 type: "INFO",
                 payload: {
@@ -344,8 +259,6 @@ const App = () => {
                                 key={blog.id}
                                 blog={blog}
                                 user={user.username}
-                                update={() => updateLikes(blog)}
-                                deleteBlog={() => deleteBlog(blog.id)}
                             />
                         ))}
                     </div>

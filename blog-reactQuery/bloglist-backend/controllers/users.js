@@ -51,4 +51,24 @@ usersRouter.get("/api/users", async (request, response) => {
     response.json(users);
 });
 
+usersRouter.get("/api/users/:id", async (request, response) => {
+    try {
+        const userId = request.params.id;
+        const user = await User.findById(userId).populate("blogs", {
+            title: 1,
+            author: 1,
+            url: 1,
+            likes: 1,
+        });
+
+        if (!user) {
+            return response.status(404).json({ error: "User not found" });
+        }
+
+        response.json(user);
+    } catch (error) {
+        response.status(500).json({ error: "Server error" });
+    }
+});
+
 module.exports = usersRouter;

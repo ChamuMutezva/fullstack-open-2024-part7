@@ -21,7 +21,10 @@ const create = async (newObject) => {
 };
 
 const update = async (updatedBlog) => {
-    const response = await axios.put(`${baseUrl}/${updatedBlog.id}`, updatedBlog);
+    const response = await axios.put(
+        `${baseUrl}/${updatedBlog.id}`,
+        updatedBlog
+    );
     //const response = await request;
     return response.data;
 };
@@ -34,4 +37,10 @@ const deleteBlog = (id) => {
     return request.then((response) => response.data);
 };
 
-export default { getAll, setToken, create, update, deleteBlog };
+const getSingleBlog =  async (id) => {
+    const request = axios.get(`${baseUrl}/${id}`);
+    const response = await request;
+    return response.data;
+};
+
+export default { getAll, setToken, create, update, deleteBlog, getSingleBlog };

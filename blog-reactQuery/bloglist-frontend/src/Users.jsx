@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -6,7 +6,7 @@ import blogService from "./services/blogs";
 import LoginContext from "./context/LoginContext";
 
 function Users() {
-    const [resultUsers, setResultUsers] = useState([]);
+    
     const blogCountByUser = {};
 
     const result = useQuery({
@@ -40,6 +40,7 @@ function Users() {
     const res = Object.values(blogCountByUser);
     res.map((user) => console.log(user.count));
     console.log(res);
+   // usersService.getSingleUser
     // Convert the object values to an array
     // setResultUsers(Object.values(blogCountByUser));
     Object.keys(blogCountByUser).map((user) => console.log(user.id));
