@@ -6,7 +6,6 @@ import blogService from "./services/blogs";
 import LoginContext from "./context/LoginContext";
 
 function Users() {
-    
     const blogCountByUser = {};
 
     const result = useQuery({
@@ -40,7 +39,7 @@ function Users() {
     const res = Object.values(blogCountByUser);
     res.map((user) => console.log(user.count));
     console.log(res);
-   // usersService.getSingleUser
+    // usersService.getSingleUser
     // Convert the object values to an array
     // setResultUsers(Object.values(blogCountByUser));
     Object.keys(blogCountByUser).map((user) => console.log(user.id));
@@ -48,15 +47,15 @@ function Users() {
     return (
         <div>
             <div>
+                {/*
                 <div>
                     <p>{login?.username} logged in</p>
                 </div>
+    */}
                 <div className="flex">
-                    <h2>Blogs</h2>
-                    <Link to="/">Home</Link>
+                    <h2>Users</h2>
                 </div>
                 <table>
-                    <caption>Users</caption>
                     <thead>
                         <tr>
                             <th scope="col"></th>

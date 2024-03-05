@@ -52,7 +52,7 @@ function BlogPage() {
         if (login?.username) {
             if (
                 confirm(
-                    `Remove blog You're NOT gonna need it! by ${blog.author}`
+                    `Remove blog '${blog.title}' by ${blog.author}`
                 )
             ) {
                 console.log(blog);

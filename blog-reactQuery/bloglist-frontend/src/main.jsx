@@ -9,6 +9,7 @@ import App from "./App";
 import Users from "./Users";
 import User from "./User";
 import BlogPage from "./BlogPage";
+import Navigation from "./components/Navigation";
 import "./index.css";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <LoginContextProvider>
             <QueryClientProvider client={queryClient}>
                 <Router>
+                    <Navigation />
                     <Routes>
                         <Route path="/users" element={<Users />} />
                         <Route path="/users/:id" element={<User />} />

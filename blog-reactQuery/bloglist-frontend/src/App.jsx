@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useReducer, useContext } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -24,15 +24,13 @@ const App = () => {
     const [user, loginDispatch] = useContext(LoginContext);
     const dispatch = useDispatch();
     const info = useSelector((state) => state.notification);
-    console.log(info);
 
     const notifyWith = (message, type = "info") => {
-        dispatch(notificationMessage(message));
-        console.log(info);
+        dispatch(notificationMessage(message, type));
+
         setTimeout(() => {
             dispatch(notificationMessage(null));
         }, 3000);
-        console.log(info);
     };
 
     const result = useQuery({
@@ -98,32 +96,12 @@ const App = () => {
                 type: "LOGIN",
                 payload: user,
             });
-            // setUser(user);
-            console.log(user);
-            // console.log(login);
+
             setUsername("");
             setPassword("");
         } catch (exception) {
             console.log(exception);
-            notificationDispatch({
-                type: "INFO",
-                payload: {
-                    message: "Wrong username or password",
-                    type: "error",
-                },
-            });
-            console.log(notification.message);
-            setTimeout(() => {
-                console.log(notification.message);
-
-                notificationDispatch({
-                    type: "RESET",
-                    payload: {
-                        message: "",
-                        type: "reset",
-                    },
-                });
-            }, 5000);
+            notifyWith("Wrong username or password", "error");
         }
     };
 
@@ -165,7 +143,7 @@ const App = () => {
                 type: "LOGIN",
                 payload: user,
             });
-            // setUser(user);
+
             blogService.setToken(user.token);
         }
 
@@ -173,7 +151,7 @@ const App = () => {
             loginDispatch({
                 type: "LOGOUT",
             });
-            // setUser(null);
+
             window.localStorage.removeItem("loggedBlogAppUser");
         }
     }, []);
@@ -191,7 +169,7 @@ const App = () => {
             {user && (
                 <div className="blogs">
                     <h2>blogs</h2>
-                    <p>{user.username} logged in</p>
+
                     <button onClick={logout}>Log out</button>
                     <Link to={"/users"}>Users</Link>
 
