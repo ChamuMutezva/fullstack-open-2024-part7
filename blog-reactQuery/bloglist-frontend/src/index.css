@@ -1,3 +1,16 @@
+:root {
+    --input-border: #8b8a8b;
+    --input-focus-h: 245;
+    --input-focus-s: 100%;
+    --input-focus-l: 42%;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 h1 {
     color: green;
     font-style: italic;
@@ -31,5 +44,38 @@ h1 {
     display: none;
 }
 
+.logged-out {
+    font-size: 1.2em;
+}
 
+.login-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
 
+.container-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input {
+    font-size: 16px;
+    font-size: max(16px, 1em);
+    font-family: inherit;
+    padding: 0.25em 0.5em;
+    background-color: #fff;
+    border: 2px solid var(--input-border);
+    border-radius: 4px;
+    line-height: 1;
+    height: 2.25rem;
+}
+.input:focus {
+    border-color: hsl(
+        var(--input-focus-h),
+        var(--input-focus-s),
+        var(--input-focus-l)
+    );
+}

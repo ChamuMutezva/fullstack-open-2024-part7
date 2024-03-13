@@ -45,15 +45,6 @@ const App = () => {
         },
     });
 
-    const logout = () => {
-        console.log("log out");
-        loginDispatch({
-            type: "LOGOUT",
-        });
-
-        return window.localStorage.removeItem("loggedBlogAppUser");
-    };
-
     const handleCreateBlog = (event) => {
         event.preventDefault();
         blogFormRef.current.toggleVisibility();
@@ -169,9 +160,6 @@ const App = () => {
             {user && (
                 <div className="blogs">
                     <h2>blogs</h2>
-
-                    <button onClick={logout}>Log out</button>
-                    <Link to={"/users"}>Users</Link>
 
                     {createBlog()}
 
