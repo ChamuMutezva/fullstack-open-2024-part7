@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const blogRouter = require("express").Router();
 const Blog = require("../models/blog");
 const User = require("../models/user");
+//const Comment = require("../models/comment");
 
 // 4.20*: bloglist expansion, step8
 // Middleware function to authenticate user
@@ -46,10 +47,11 @@ blogRouter.get("/api/blogs", async (request, response) => {
 blogRouter.get("/api/blogs/:id", async (request, response) => {
     try {
         const blogId = request.params.id;
-        const blog = await Blog.findById(blogId).populate("user", {
+        const blog = await Blog.findById(blogId).populate("comment").populate("user", {
             username: 1,
             name: 1,
             id: 1,
+            comment: 1,
         });
 
         if (!blog) {
