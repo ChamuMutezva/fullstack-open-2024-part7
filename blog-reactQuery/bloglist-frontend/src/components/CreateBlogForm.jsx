@@ -12,38 +12,43 @@ function CreateBlogForm({
     return (
         <div>
             <h3>Create new</h3>
-            <form id="form" noValidate onSubmit={handleCreateBlog}>
-                <div>
+            <form id="form" className="new-blog" noValidate onSubmit={handleCreateBlog}>
+                <div className="container-inputs">
                     <label htmlFor="title">title</label>
                     <input
                         type="text"
                         id="title"
+                        className="input"
                         value={title}
                         name="title"
                         onChange={handleTitleChange}
                     />
                 </div>
-                <div>
+                <div className="container-inputs">
                     <label htmlFor="author">author</label>
                     <input
                         type="text"
                         id="author"
+                        className="input"
                         value={author}
                         name="author"
                         onChange={handleAuthorChange}
                     />
                 </div>
-                <div>
+                <div className="container-inputs">
                     <label htmlFor="url">url</label>
                     <input
                         type="url"
                         id="url"
+                        className="input"
                         value={url}
                         name="url"
                         onChange={handleUrlChange}
                     />
                 </div>
-                <button id="createform-btn" type="submit">Create</button>
+                <button id="createform-btn" className="button" type="submit">
+                    Create
+                </button>
             </form>
         </div>
     );

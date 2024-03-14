@@ -24,7 +24,9 @@ function Navigation() {
                     <nav className="navs">
                         <Link to={"/"}>Blogs</Link>
                         <Link to={"/users"}>Users</Link>
-                        <button onClick={logout}>Log out</button>
+                        <button onClick={logout} className="button">
+                            Log out
+                        </button>
                     </nav>
                     <p>{user?.username} logged in</p>
                 </div>

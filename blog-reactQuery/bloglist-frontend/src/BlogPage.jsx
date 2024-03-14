@@ -22,7 +22,7 @@ function BlogPage() {
     });
 
     const blog = result.data;
-
+    
     const notifyWith = (message, type = "info") => {
         dispatch(notificationMessage(message));
         console.log(info);
@@ -50,11 +50,7 @@ function BlogPage() {
         console.log(login?.username);
 
         if (login?.username) {
-            if (
-                confirm(
-                    `Remove blog '${blog.title}' by ${blog.author}`
-                )
-            ) {
+            if (confirm(`Remove blog '${blog.title}' by ${blog.author}`)) {
                 console.log(blog);
                 try {
                     deleteBlogMutation.mutate(blog.id);
@@ -90,21 +86,31 @@ function BlogPage() {
         <div>
             <h2>Blog</h2>
             {login?.username} logged in
-            <button onClick={() => navigate(-1)}> Back</button>
+            <button onClick={() => navigate(-1)} className="button">
+                {" "}
+                Back
+            </button>
             <Notification info={info} />
             <h3>{blog?.title}</h3>
             <a href={`${blog?.url}`}>{blog?.url}</a>
             <p>{blog?.likes} likes</p>
-            <button
-                id="like-btn"
-                onClick={() => updateLikes(blog)}
-                disabled={info.message !== null}
-            >
-                Like
-            </button>
-            <button id="delete-btn" onClick={() => deleteBlog(blog.id)}>
-                Delete
-            </button>
+            <div className="container-btns">
+                <button
+                    id="like-btn"
+                    className="button"
+                    onClick={() => updateLikes(blog)}
+                    disabled={info.message !== null}
+                >
+                    Like
+                </button>
+                <button
+                    id="delete-btn"
+                    className="button"
+                    onClick={() => deleteBlog(blog.id)}
+                >
+                    Delete
+                </button>
+            </div>
             <p>Added by {blog?.author}</p>
         </div>
     );

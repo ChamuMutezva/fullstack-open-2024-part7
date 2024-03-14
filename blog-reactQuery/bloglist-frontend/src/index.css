@@ -5,15 +5,20 @@
     --input-focus-l: 42%;
 }
 
+@font-face {
+    font-family: grapenuts;
+    src: url(./fonts/GrapeNuts-Regular.ttf);
+}
+h1 {
+    font-family: grapenuts;
+    color: green;
+}
 body {
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-}
-h1 {
-    color: green;
-    font-style: italic;
+    font-family: grapenuts;
 }
 
 .note {
@@ -48,7 +53,8 @@ h1 {
     font-size: 1.2em;
 }
 
-.login-form {
+.login-form,
+.new-blog {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -58,6 +64,11 @@ h1 {
 .container-inputs {
     display: flex;
     flex-direction: column;
+    gap: 0.5rem;
+}
+
+.container-btns {
+    display: flex;
     gap: 0.5rem;
 }
 
@@ -78,4 +89,58 @@ h1 {
         var(--input-focus-s),
         var(--input-focus-l)
     );
+}
+
+.navs {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.button {
+    background-image: linear-gradient(#42a1ec, #0070c9);
+    border: 1px solid #0077cc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    color: #ffffff;
+    cursor: pointer;
+    direction: ltr;
+    display: block;
+    font-size: 1.2em;
+    font-weight: 400;
+    letter-spacing: -0.022em;
+    line-height: 1.5;
+    min-width: 30px;
+    overflow: visible;
+    padding: 4px 15px;
+    text-align: center;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+}
+
+.button:hover {
+    background-image: linear-gradient(#51a9ee, #147bcd);
+    border-color: #1482d0;
+    text-decoration: none;
+}
+
+.button:active {
+    background-image: linear-gradient(#3d94d9, #0067b9);
+    border-color: #006dbc;
+    outline: none;
+}
+
+.button:focus {
+    box-shadow: rgba(131, 192, 253, 0.5) 0 0 0 3px;
+    outline: none;
+}
+
+.blog {
+    display: flex;
+    padding: 1rem;
+    justify-content: center;
+    align-items: center;
 }
